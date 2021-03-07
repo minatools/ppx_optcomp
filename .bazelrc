@@ -1,1 +1,4 @@
+build:native --@ocaml//mode=native
+build:native --@ppx//mode=native
+
 try-import user.bazelrc
