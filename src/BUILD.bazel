@@ -2,7 +2,7 @@ load(
     "@obazl_rules_ocaml//ocaml:rules.bzl",
     "ppx_archive",
     "ppx_module",
-    "ppx_ns_library",
+    "ppx_ns_archive",
 )
 
 # load("@obazl_rules_ocaml//ocaml:macros.bzl", "ns_env")
@@ -18,66 +18,50 @@ PPX_OPTCOMP_OPAM_DEPS = [
     "stdio",
 ]
 
-# ###########
-ppx_module(
+#################
+ppx_ns_archive(
     name = "ppx_optcomp",
-    struct = "ppx_optcomp.ml",
-    deps = [
-        "Cparser",
-        "Interpreter",
-        "Token",
+    submodules = [
+        ":_Cparser",
+        ":_Interpreter",
+        ":_Ppx_optcomp",
+        ":_Token"
     ],
-    deps_opam = PPX_OPTCOMP_OPAM_DEPS,
     visibility = ["//visibility:public"]
 )
 
-# ############
-# ppx_archive(
-#     name = "ppx_optcomp",
-#     opts = [],
-#     visibility = ["//visibility:public"],
-#     deps = PPX_OPTCOMP_DEPS + [
-#         # do not sort (buildifier)
-#         ":Cparser",
-#         ":Interpreter",
-#         ":Ppx_optcomp",
-#         ":Token",
-#     ],
-# )
-
-#########
-# ppx_ns_library(
-#     name = "ppx_optcomp",
-#     main = "ppx_optcomp.ml",
-#     submodules = {
-#         ":Cparser": "Cparser",
-#         ":Interpreter": "Interpreter",
-#         # ":Ppx_optcomp": "Ppx_optcomp",
-#         ":Token": "Token"
-#     },
-#     # deps_opam = PPX_OPTCOMP_OPAM_DEPS
-# )
-
-###########
+# ###########
 ppx_module(
-    name = "Cparser",
-    struct = "cparser.ml",
+    name = "_Ppx_optcomp",
+    struct = "ppx_optcomp.ml",
     deps = [
-        "Token",
+        "_Cparser",
+        "_Interpreter",
+        "_Token",
     ],
     deps_opam = PPX_OPTCOMP_OPAM_DEPS
 )
 
 ###########
 ppx_module(
-    name = "Interpreter",
+    name = "_Cparser",
+    struct = "cparser.ml",
+    deps = [
+        "_Token",
+    ],
+    deps_opam = PPX_OPTCOMP_OPAM_DEPS
+)
+
+###########
+ppx_module(
+    name = "_Interpreter",
     struct = "interpreter.ml",
     deps_opam = PPX_OPTCOMP_OPAM_DEPS
 )
 
 ###########
 ppx_module(
-    name = "Token",
+    name = "_Token",
     struct = "token.ml",
     deps_opam = PPX_OPTCOMP_OPAM_DEPS
 )
